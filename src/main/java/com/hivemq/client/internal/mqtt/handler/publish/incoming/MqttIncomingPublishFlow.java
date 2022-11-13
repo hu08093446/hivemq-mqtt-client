@@ -69,6 +69,7 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
         this.manualAcknowledgement = manualAcknowledgement;
     }
 
+    // 这种CallByThread注解应该仅仅是标识作用
     @CallByThread("Netty EventLoop")
     @Override
     public void onNext(final @NotNull Mqtt5Publish result) {

@@ -184,6 +184,12 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
         }
     }
 
+    // 这个fromcode的功能我会这样写：
+    // 先生成code和对应enum的map
+    // Map<Integer, Mqtt5DisconnectReasonCode> map =
+    // Arrays.stream(Mqtt5DisconnectReasonCode.values()).collect(Collectors.toMap(Mqtt5DisconnectReasonCode::getCode,Function.identity(), (a, b) -> a))
+    // 然后直接执行get操作即可
+    // 它这里的写法看着好复杂
     /**
      * Returns the Disconnect Reason Code belonging to the given byte code.
      *
@@ -204,6 +210,7 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
         return ERROR_CODE_LOOKUP[code - ERROR_CODE_MIN];
     }
 
+    // EnumSet据说速度相比HashSet更快
     private static final @NotNull EnumSet<Mqtt5DisconnectReasonCode> BY_CLIENT =
             EnumSet.of(NORMAL_DISCONNECTION, DISCONNECT_WITH_WILL_MESSAGE, UNSPECIFIED_ERROR, MALFORMED_PACKET,
                     PROTOCOL_ERROR, IMPLEMENTATION_SPECIFIC_ERROR, BAD_AUTHENTICATION_METHOD, TOPIC_NAME_INVALID,
@@ -217,6 +224,7 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
                         TOPIC_ALIAS_INVALID, PACKET_TOO_LARGE));
     }
 
+    // 其实也可以每个错误码依据自己的实际情况来实现这三个方法，这样就不需要像现在这样集中处理，不过各有利弊，这样可以快速直观的看到结果
     @Override
     public boolean canBeSentByServer() {
         return this != DISCONNECT_WITH_WILL_MESSAGE;
