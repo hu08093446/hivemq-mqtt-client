@@ -81,6 +81,8 @@ public class MqttRxClient implements Mqtt5RxClient {
         return connect(MqttChecks.connect(connect));
     }
 
+    // Mqtt5Connect是MqttConnect的子类，如果没有这个方法，那么connect(MqttConnect.DEFAULT)调用的应该是上面那个方法
+    // 原来还有这种重载，一直以为只有不同类型才是合法重载，原来父子类也是重载
     @NotNull Single<Mqtt5ConnAck> connect(final @NotNull MqttConnect connect) {
         return connectUnsafe(connect).observeOn(clientConfig.getExecutorConfig().getApplicationScheduler());
     }

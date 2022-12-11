@@ -64,6 +64,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private int eventLoopAcquires;
     private long eventLoopAcquireCount;
 
+    // Q:这里state为什么要设置为AtomicReference类型呢？ A:通过get方法在其他地方用到了它的compareAndSet操作
     private final @NotNull AtomicReference<@NotNull MqttClientState> state;
     private volatile @Nullable MqttClientConnectionConfig connectionConfig;
     private @NotNull MqttClientTransportConfigImpl currentTransportConfig;
