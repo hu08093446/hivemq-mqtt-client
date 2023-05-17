@@ -161,21 +161,23 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
         } else if (validateClientIdentifier(connAck, channel)) {
             final MqttClientConnectionConfig connectionConfig = addConnectionConfig(connAck, channel);
-
+            // 走到这一步说明连接mqtt服务器成功了，所以这个handler也就不需要了
             channel.pipeline().remove(this);
-
+            // 设置接收的最大packet的大小
             ((MqttEncoder) channel.pipeline().get(MqttEncoder.NAME)).onConnected(connectionConfig);
-
+            // to read
             session.startOrResume(connAck, connectionConfig, channel.pipeline(), channel.eventLoop());
 
             final int keepAlive = connectionConfig.getKeepAlive();
             if (keepAlive > 0) {
                 final MqttPingHandler pingHandler = new MqttPingHandler(keepAlive, connectFlushTime, System.nanoTime());
+                // 和mqtt服务器周期通信保活的handler
                 channel.pipeline().addAfter(MqttDecoder.NAME, MqttPingHandler.NAME, pingHandler);
             }
-
+            // 更新连接状态
             clientConfig.getRawState().set(MqttClientState.CONNECTED);
 
+            // 连接成功了，回调对应的listeners
             final ImmutableList<MqttClientConnectedListener> connectedListeners = clientConfig.getConnectedListeners();
             if (!connectedListeners.isEmpty()) {
                 final MqttClientConnectedContext context =
