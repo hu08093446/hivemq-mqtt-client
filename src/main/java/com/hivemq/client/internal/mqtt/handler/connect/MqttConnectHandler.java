@@ -134,10 +134,11 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     @Override
     public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
         cancelTimeout();
-
+        // 这里的msg是经过MqttCoonAckDecoder解码过的
         if (msg instanceof MqttConnAck) {
             readConnAck((MqttConnAck) msg, ctx.channel());
         } else {
+            // 如果收到的不是connack消息，则的主动断开连接
             readOtherThanConnAck(msg, ctx.channel());
         }
     }
@@ -190,7 +191,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
                     }
                 }
             }
-
+            // 这玩意儿咋工作的？
             connAckFlow.onSuccess(connAck);
         }
     }
@@ -295,9 +296,9 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     @Override
     protected void onDisconnectEvent(
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
-
+        // 先断开
         super.onDisconnectEvent(ctx, disconnectEvent);
-
+        // 然后尝试重连
         MqttConnAckSingle.reconnect(clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect,
                 connAckFlow, ctx.channel().eventLoop());
     }
