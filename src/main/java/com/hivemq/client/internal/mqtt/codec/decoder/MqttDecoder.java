@@ -78,6 +78,7 @@ public class MqttDecoder extends ByteToMessageDecoder {
         try {
             if (remainingLength < 0) {
                 if (remainingLength == MqttVariableByteInteger.NOT_ENOUGH_BYTES) {
+                    // 当前读取的字节数不够，把readerIndex回退，等待下一次读取
                     in.readerIndex(readerIndexBeforeFixedHeader);
                     return;
                 }
@@ -94,6 +95,7 @@ public class MqttDecoder extends ByteToMessageDecoder {
             }
 
             final int writerIndex = in.writerIndex();
+            // 如果小于，说明整个数据帧还没有读取完毕，回退readerIndex，等待下一次读取
             if (writerIndex < readerIndexAfterFixedHeader + remainingLength) {
                 in.readerIndex(readerIndexBeforeFixedHeader);
                 return;

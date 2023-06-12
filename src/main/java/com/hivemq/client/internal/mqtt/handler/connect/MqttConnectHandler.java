@@ -126,8 +126,10 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     @Override
     protected void operationSuccessful(final @NotNull ChannelHandlerContext ctx) {
         if (connect.getRawEnhancedAuthMechanism() == null) {
+            // connect请求写入结束后，不会一直等着，要有个超时时间
             scheduleTimeout(ctx.channel());
         }
+        // 一旦connect请求写入结束，就要把decoder加入进来，这样才能解析mqtt服务端的响应
         ctx.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, decoder);
     }
 
