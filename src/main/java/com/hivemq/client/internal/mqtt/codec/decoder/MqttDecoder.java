@@ -64,7 +64,7 @@ public class MqttDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(
             final @NotNull ChannelHandlerContext ctx, final @NotNull ByteBuf in, final @NotNull List<Object> out) {
-
+        // 最短长度达不到，累积，等一下再读取
         if (in.readableBytes() < MIN_FIXED_HEADER_LENGTH) {
             return;
         }

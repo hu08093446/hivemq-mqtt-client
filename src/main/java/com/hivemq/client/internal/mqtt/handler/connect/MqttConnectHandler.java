@@ -176,7 +176,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
                 // 和mqtt服务器周期通信保活的handler
                 channel.pipeline().addAfter(MqttDecoder.NAME, MqttPingHandler.NAME, pingHandler);
             }
-            // 更新连接状态
+            // 更新连接状态错误
             clientConfig.getRawState().set(MqttClientState.CONNECTED);
 
             // 连接成功了，回调对应的listeners
