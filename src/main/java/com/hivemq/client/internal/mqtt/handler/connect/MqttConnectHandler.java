@@ -168,7 +168,6 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
             channel.pipeline().remove(this);
             // 设置接收的最大packet的大小
             ((MqttEncoder) channel.pipeline().get(MqttEncoder.NAME)).onConnected(connectionConfig);
-            // to read
             session.startOrResume(connAck, connectionConfig, channel.pipeline(), channel.eventLoop());
 
             final int keepAlive = connectionConfig.getKeepAlive();

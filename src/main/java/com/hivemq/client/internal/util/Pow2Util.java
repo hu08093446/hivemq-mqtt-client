@@ -21,9 +21,14 @@ package com.hivemq.client.internal.util;
  */
 public final class Pow2Util {
 
+    // 把数值转换成2的指数倍需要左移的位数（1向左移）
     public static int roundToPowerOf2Bits(final int value) {
         return 32 - Integer.numberOfLeadingZeros(value - 1);
     }
 
     private Pow2Util() {}
+
+    public static void main(String[] args) {
+        System.out.println(roundToPowerOf2Bits(9));
+    }
 }

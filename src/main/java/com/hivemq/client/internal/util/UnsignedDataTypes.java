@@ -21,7 +21,9 @@ package com.hivemq.client.internal.util;
  */
 public final class UnsignedDataTypes {
 
+    // 无符号短整形肯定都是正的，要把最高位也用上，所以需要用int来保存
     public static final int UNSIGNED_SHORT_MAX_VALUE = 0xFFFF;
+    // 同理，无符号整形需要用long来保存
     public static final long UNSIGNED_INT_MAX_VALUE = 0xFFFF_FFFFL;
 
     public static boolean isUnsignedShort(final long value) {

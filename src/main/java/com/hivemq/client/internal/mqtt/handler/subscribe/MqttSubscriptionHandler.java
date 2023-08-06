@@ -58,6 +58,7 @@ import java.io.IOException;
 /**
  * @author Silvio Giebl
  */
+// 该Handler的作用：订阅和退订指定的topic
 @ClientScope
 public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements Runnable {
 

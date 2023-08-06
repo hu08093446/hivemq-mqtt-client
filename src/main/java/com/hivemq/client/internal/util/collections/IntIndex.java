@@ -28,6 +28,7 @@ import java.util.function.ToIntFunction;
 /**
  * @author Silvio Giebl
  */
+// 看着像是HashMap的结构，而且是用红黑树实现的，为啥不直接用HashMap嘞
 @NotThreadSafe
 public class IntIndex<E> {
 
