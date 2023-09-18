@@ -22,6 +22,7 @@ import java.lang.annotation.*;
 
 /**
  * Documents that a method should only be called by the specified thread.
+ * 这个注解目前看仅仅起到标记作用，没有任何实际的约束力，它的保留策略是CLASS，这个策略在代码实际运行的时候是不保留的
  *
  * @author Silvio Giebl
  */

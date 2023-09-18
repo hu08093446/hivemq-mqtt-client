@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 
 /**
  * @author Silvio Giebl
+ * 这是一块分块的扩展的数组，相当于是扩展了原Java数组的功能，让它的大小可变
  */
 @NotThreadSafe
 public class ChunkedArrayQueue<E> implements Iterable<E> {
