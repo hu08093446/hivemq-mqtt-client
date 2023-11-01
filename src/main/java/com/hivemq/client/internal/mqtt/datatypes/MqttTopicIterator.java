@@ -44,7 +44,9 @@ public class MqttTopicIterator extends MqttTopicLevel {
     }
 
     private int start;
+    // end指的是下一个/的位置
     private int end;
+    // allEnd指的是整个topic最后一个字符的位置
     private final int allEnd;
 
     private MqttTopicIterator(final byte @NotNull [] array, final int start, final int end, final int allEnd) {
@@ -76,11 +78,13 @@ public class MqttTopicIterator extends MqttTopicLevel {
         return new MqttTopicIterator(array, start, end, allEnd);
     }
 
+    // 返回两个/之间的内容
     public @NotNull MqttTopicLevel next() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
         start = end + 1;
+        // 在array中从start开始，寻找下一个/的位置
         end = ByteArrayUtil.indexOf(array, start, (byte) MqttTopicImpl.TOPIC_LEVEL_SEPARATOR);
         return this;
     }

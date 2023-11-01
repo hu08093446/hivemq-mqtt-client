@@ -43,7 +43,9 @@ import java.util.Map;
 @NotThreadSafe
 public class MqttIncomingPublishFlows {
 
+    // subscribedFlows是本地订阅的所有topic信息结构
     private final @NotNull MqttSubscribedPublishFlows subscribedFlows;
+    // 目前我用到的场景里，globalFlows是空的
     private final @Nullable HandleList<MqttGlobalIncomingPublishFlow> @NotNull [] globalFlows;
 
     @Inject
