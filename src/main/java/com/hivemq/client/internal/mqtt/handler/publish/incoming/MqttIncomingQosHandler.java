@@ -80,6 +80,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
             final @NotNull MqttIncomingPublishFlows incomingPublishFlows) {
 
         this.clientConfig = clientConfig;
+        // MqttIncomingQosHandler和MqttIncomingPublishService互相包含，相互引用
         incomingPublishService = new MqttIncomingPublishService(this, incomingPublishFlows);
     }
 

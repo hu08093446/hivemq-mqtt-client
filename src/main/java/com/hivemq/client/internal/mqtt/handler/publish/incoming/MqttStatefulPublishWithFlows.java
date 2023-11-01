@@ -22,6 +22,7 @@ import com.hivemq.client.internal.util.collections.HandleList;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import org.jetbrains.annotations.NotNull;
 
+// 这个类应该是代表接收到的数据流的各种信息
 /**
  * @author Silvio Giebl
  */

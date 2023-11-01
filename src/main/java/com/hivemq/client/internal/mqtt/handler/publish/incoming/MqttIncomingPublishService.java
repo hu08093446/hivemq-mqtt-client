@@ -61,6 +61,7 @@ class MqttIncomingPublishService {
 
     @CallByThread("Netty EventLoop")
     void onPublishQos0(final @NotNull MqttStatefulPublishWithFlows publishWithFlows, final int receiveMaximum) {
+        // qos0的消息，如果积压消息数量超过限制，直接丢弃
         if (qos0Queue.size() >= receiveMaximum) { // TODO receiveMaximum
             LOGGER.warn("QoS 0 publish message dropped.");
             if (QOS_0_DROP_OLDEST) {
@@ -100,6 +101,7 @@ class MqttIncomingPublishService {
     @CallByThread("Netty EventLoop")
     private void onPublish(final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
         incomingPublishFlows.findMatching(publishWithFlows);
+        // 在做了findMathing操作后，publishWithFlows会将匹配的接收方保存在HandleList中
         if (publishWithFlows.isEmpty()) {
             LOGGER.warn("No publish flow registered for {}.", publishWithFlows.publish);
         }

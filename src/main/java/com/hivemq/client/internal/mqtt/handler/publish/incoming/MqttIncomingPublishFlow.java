@@ -51,7 +51,7 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
 
     private boolean done;
     private @Nullable Throwable error;
-
+    // todo 这里的referenced代指的是什么？
     private int referenced;
     private int missingAcknowledgements;
     private long blockedIndex;

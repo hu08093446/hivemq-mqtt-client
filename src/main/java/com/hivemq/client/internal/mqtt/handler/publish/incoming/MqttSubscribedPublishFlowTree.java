@@ -154,6 +154,7 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
         }
     }
 
+    // 这个类看着像是本地保存的topic信息
     private static class TopicTreeNode {
 
         private static final Index.@NotNull Spec<TopicTreeNode, MqttTopicLevel> INDEX_SPEC =
@@ -367,6 +368,7 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
 
             if (entries != null) {
                 flows.subscriptionFound = true;
+                // TopicTreeEntry应该是本机关注的类似树形结构的topic
                 for (TopicTreeEntry entry = entries.getFirst(); entry != null; entry = entry.getNext()) {
                     if (entry.flow != null) {
                         flows.add(entry.flow);
