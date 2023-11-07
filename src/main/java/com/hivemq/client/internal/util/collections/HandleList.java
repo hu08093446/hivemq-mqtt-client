@@ -22,9 +22,11 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
+// HandleList并没有什么特殊的，它依旧是一个双向链表，只不过是在NodeList的基础上增加了存储数据的元素
 @NotThreadSafe
 public class HandleList<E> extends NodeList<HandleList.Handle<E>> {
 
+    // Node本身是个抽象类，只提供了pre和next指针，并没有存储数据的字段，Handle就是在此基础上增加了存储数据的元素
     public static class Handle<E> extends NodeList.Node<Handle<E>> {
 
         private final @NotNull E element;
@@ -40,6 +42,7 @@ public class HandleList<E> extends NodeList<HandleList.Handle<E>> {
 
     public @NotNull Handle<E> add(final @NotNull E element) {
         final Handle<E> handle = new Handle<>(element);
+        // add操作把handle放在了列表的最后一个位置
         add(handle);
         return handle;
     }

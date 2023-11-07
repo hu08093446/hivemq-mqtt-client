@@ -101,7 +101,7 @@ class MqttIncomingPublishService {
     @CallByThread("Netty EventLoop")
     private void onPublish(final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
         incomingPublishFlows.findMatching(publishWithFlows);
-        // 在做了findMathing操作后，publishWithFlows会将匹配的接收方保存在HandleList中
+        // 在做了findMatching操作后，publishWithFlows会将匹配的接收方保存在HandleList中
         if (publishWithFlows.isEmpty()) {
             LOGGER.warn("No publish flow registered for {}.", publishWithFlows.publish);
         }
