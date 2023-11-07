@@ -24,15 +24,18 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
+ * 这个类应该是代表接收到的数据流的各种信息
+ * 其中的HandleList代表了这个mqtt消息的订阅方列表
  */
-// 这个类应该是代表接收到的数据流的各种信息
 @NotThreadSafe
 class MqttStatefulPublishWithFlows extends HandleList<MqttIncomingPublishFlow> {
-
+    // publish中是接收到的mqtt消息
     final @NotNull MqttStatefulPublish publish;
     long id;
+    // 和mqtt服务器的连接标识
     long connectionIndex;
     boolean subscriptionFound;
+    // 这个字段代表当前消息需要ack的次数，因为一个消息可能有多个订阅方
     private int missingAcknowledgements;
 
     MqttStatefulPublishWithFlows(final @NotNull MqttStatefulPublish publish) {
@@ -42,13 +45,17 @@ class MqttStatefulPublishWithFlows extends HandleList<MqttIncomingPublishFlow> {
     @Override
     public @NotNull Handle<MqttIncomingPublishFlow> add(final @NotNull MqttIncomingPublishFlow flow) {
         if ((publish.stateless().getQos() != MqttQos.AT_MOST_ONCE) && flow.manualAcknowledgement) {
+            // 这里是从本条mqtt消息的维度进行没有ack的订阅方的统计
             missingAcknowledgements++;
+            // 这里是从订阅方的维度进行没有ack消息的统计
             flow.increaseMissingAcknowledgements();
         }
+        // 把订阅方加入到订阅列表里面去
         return super.add(flow);
     }
 
     boolean areAcknowledged() {
+        // 判断还有没有订阅方没有ack
         return missingAcknowledgements == 0;
     }
 

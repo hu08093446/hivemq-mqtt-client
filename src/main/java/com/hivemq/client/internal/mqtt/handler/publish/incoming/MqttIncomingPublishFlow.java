@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Silvio Giebl
+ * 目测这个类对应着一个订阅方
  */
 abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
         implements Emitter<Mqtt5Publish>, Subscription, Runnable {
@@ -53,6 +54,7 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     private @Nullable Throwable error;
     // todo 这里的referenced代指的是什么？
     private int referenced;
+    // 我现在的理解是，这个代表了当前订阅方已经匹配上但还没有ack的消息的数量
     private int missingAcknowledgements;
     private long blockedIndex;
     private boolean blocking;
