@@ -123,6 +123,10 @@ class MqttIncomingPublishService {
         while (qos1Or2It.hasNext()) {
             final MqttStatefulPublishWithFlows publishWithFlows = qos1Or2It.next();
             emit(publishWithFlows);
+            // 这里的判断条件有三个
+            // 第一个条件用来确保当前的 publishWithFlows 是消息数组中的第一个
+            // 第二个条件也是用来保证所有的订阅方都进行了消息的推送
+            // 第三个是判断这个消息对应的所有订阅方是否都已经进行了ack
             if ((qos1Or2It.getIterated() == 1) && publishWithFlows.isEmpty() && publishWithFlows.areAcknowledged()) {
                 qos1Or2It.remove();
                 incomingQosHandler.ack(publishWithFlows);
@@ -130,6 +134,7 @@ class MqttIncomingPublishService {
                 return;
             }
         }
+
         qos0It.reset();
         while (qos0It.hasNext()) {
             final MqttStatefulPublishWithFlows publishWithFlows = qos0It.next();
@@ -144,9 +149,11 @@ class MqttIncomingPublishService {
 
     @CallByThread("Netty EventLoop")
     private void emit(final @NotNull MqttStatefulPublishWithFlows publishWithFlows) {
+        // 轮询订阅方进行当前消息的推送
         for (Handle<MqttIncomingPublishFlow> h = publishWithFlows.getFirst(); h != null; h = h.getNext()) {
             final MqttIncomingPublishFlow flow = h.getElement();
 
+            // 订阅被取消了
             if (flow.isCancelled()) {
                 publishWithFlows.remove(h);
                 if (flow.dereference() == 0) {
@@ -172,7 +179,9 @@ class MqttIncomingPublishService {
                         flow.checkDone();
                     }
                 } else if (requested == 0) {
+                    // requested为0代表向这个订阅方推送消息被阻塞了，阻塞统计+1
                     blockingFlowCount++;
+                    // todo 这里进行break的目的是啥呢？
                     if (blockingFlowCount == referencedFlowCount) {
                         break;
                     }

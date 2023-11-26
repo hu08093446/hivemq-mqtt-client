@@ -200,9 +200,11 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
 
     @CallByThread("Netty EventLoop")
     void acknowledge(final boolean drain) {
+        // 这里的drain代表了某一个消息对应的所有订阅方是否都进行了ack
         if (drain) {
             incomingPublishService.drain();
         }
+        // 从订阅者的角度将需要ack但是没有ack的消息数量减一
         if (--missingAcknowledgements == 0) {
             checkDone();
         }
