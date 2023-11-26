@@ -151,6 +151,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
     private void queue(final @NotNull MqttSubOrUnsubWithFlow subOrUnsubWithFlow) {
         pending.add(subOrUnsubWithFlow);
+        // 这里的设计很高明，如果当前没有在向mqtt服务器发送订阅，则执行run进行发送，如果当前进行发送，那么就等待pending队列一个个执行发送
         if (sendPending == null) {
             sendPending = subOrUnsubWithFlow;
             run();
@@ -166,6 +167,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         }
         int written = 0;
         for (MqttSubOrUnsubWithFlow subOrUnsubWithFlow = sendPending;
+             // 订阅的时候，最多有MAX_SUB_PENDING个订阅处于等待mqtt服务器回复的状态
              (subOrUnsubWithFlow != null) && (pendingIndex.size() < MAX_SUB_PENDING);
              sendPending = subOrUnsubWithFlow = subOrUnsubWithFlow.getNext()) {
 
@@ -191,6 +193,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         }
     }
 
+    // 向mqtt服务器发送订阅信息
     private void writeSubscribe(
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubscribeWithFlow subscribeWithFlow) {
 
