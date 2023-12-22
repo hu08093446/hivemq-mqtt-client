@@ -26,6 +26,7 @@ import java.util.concurrent.RejectedExecutionException;
  */
 public final class ExecutorUtil {
 
+    // 这个方法其实就是对应execute方法做了封装，出现异常是不直接抛出
     public static boolean execute(final @NotNull Executor executor, final @NotNull Runnable runnable) {
         try {
             executor.execute(runnable);
@@ -35,5 +36,6 @@ public final class ExecutorUtil {
         }
     }
 
+    // 保证单实例
     private ExecutorUtil() {}
 }

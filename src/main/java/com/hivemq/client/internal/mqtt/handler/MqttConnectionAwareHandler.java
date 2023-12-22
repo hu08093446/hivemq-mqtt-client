@@ -32,6 +32,7 @@ public abstract class MqttConnectionAwareHandler extends ChannelInboundHandlerAd
 
     @Override
     public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
+        // 这里的ctx是为了方便在没有ctx参数的方法中使用，它和方法中ctx参与指向同一个ChannelHandlerContext
         this.ctx = ctx;
     }
 

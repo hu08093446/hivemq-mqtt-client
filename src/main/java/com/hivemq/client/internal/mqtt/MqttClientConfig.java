@@ -208,6 +208,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     public boolean executeInEventLoop(final @NotNull Runnable runnable) {
+        // EventLoop是单线程
         final EventLoop eventLoop = this.eventLoop;
         if (eventLoop == null) {
             return false;

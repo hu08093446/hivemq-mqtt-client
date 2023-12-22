@@ -108,6 +108,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
     @Override
     public void channelInactive(final @NotNull ChannelHandlerContext ctx) {
+        // 将channel断开事件继续向后传递 （从源码看，这个貌似也是inbound事件）
         ctx.fireChannelInactive();
         if (state == null) {
             state = STATE_CLOSED;
@@ -115,6 +116,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
                     new ConnectionClosedException("Server closed connection without DISCONNECT."),
                     MqttDisconnectSource.SERVER);
         } else if (state instanceof DisconnectingState) {
+            // todo 下面的处理没看懂
             final DisconnectingState disconnectingState = (DisconnectingState) state;
             state = STATE_CLOSED;
             disconnectingState.timeoutFuture.cancel(false);
@@ -128,7 +130,9 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         if (state == null) {
             state = STATE_CLOSED;
             fireDisconnectEvent(ctx.channel(), new ConnectionClosedException(cause), MqttDisconnectSource.CLIENT);
-        } else if (!(cause instanceof IOException)) {
+        }
+        // todo 这里是把异常无视了吗？为什么？
+        else if (!(cause instanceof IOException)) {
             LOGGER.warn("Exception while disconnecting: {}", cause);
         }
     }
@@ -144,7 +148,9 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         if ((ctx != null) && (state == null)) {
             state = STATE_CLOSED;
             fireDisconnectEvent(ctx.channel(), new MqttDisconnectEvent.ByUser(disconnect, flow));
-        } else {
+        }
+        // todo 这里的flow有啥用？
+        else {
             flow.onError(MqttClientStateExceptions.notConnected());
         }
     }
