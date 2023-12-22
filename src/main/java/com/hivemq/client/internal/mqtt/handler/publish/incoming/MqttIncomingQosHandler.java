@@ -105,6 +105,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
     }
 
     private void readPublish(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish) {
+        // 枚举可以直接当作switch的参数
         switch (publish.stateless().getQos()) {
             case AT_MOST_ONCE:
                 readPublishQos0(publish);
@@ -115,6 +116,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
             case EXACTLY_ONCE:
                 readPublishQos2(ctx, publish);
                 break;
+                // 缺了default, 一般还是要有的
         }
     }
 

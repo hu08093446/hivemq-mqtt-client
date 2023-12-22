@@ -65,12 +65,14 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
     @Override
     public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
         super.handlerAdded(ctx);
+        // 只要handler被加入到pipeline,就开始执行心跳检测
         schedule(ctx, nextDelay(System.nanoTime()));
     }
 
     @Override
     public void flush(final @NotNull ChannelHandlerContext ctx) {
         lastFlushTimeNanos = System.nanoTime();
+        // 寻找下一个OutBoundHandler,然后执行它的flush操作
         ctx.flush();
     }
 
@@ -80,7 +82,9 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
         if (msg instanceof MqttPingResp) {
             messageRead = true;
         } else {
+            // PINGRESP_REQUIRED为false，意味着不管收到任何消息，都认为是收到了ping的响应
             messageRead = !PINGRESP_REQUIRED;
+            // 把收到的消息继续向后传递
             ctx.fireChannelRead(msg);
         }
     }
@@ -99,10 +103,12 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
             return;
         }
         if (pingReqWritten) {
+            // 已经开始写入，但是ping信息仍没有传递完成
             if (!pingReqFlushed) {
                 MqttDisconnectUtil.close(ctx.channel(), "Timeout while writing PINGREQ");
                 return;
             }
+            // ping信息已经传递，但是仍然灭有收到回复
             if (!messageRead) {
                 MqttDisconnectUtil.close(ctx.channel(), "Timeout while waiting for PINGRESP");
                 return;
@@ -112,17 +118,21 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
         messageRead = false;
         final long timeNanos = System.nanoTime();
         final long nextDelayNanos = nextDelay(timeNanos);
+        // ping操作的间隔时间还没到
         if (nextDelayNanos > 1_000) {
             pingReqWritten = false;
+            // 自己调度自己，相当于无限循环
             schedule(ctx, nextDelayNanos);
         } else {
             pingReqWritten = true;
             schedule(ctx, keepAliveNanos);
             lastFlushTimeNanos = timeNanos;
+            // 执行addListener后，如果writeAndFlush成功，会回调operationComplete方法
             ctx.writeAndFlush(MqttPingReq.INSTANCE).addListener(this);
         }
     }
 
+    // 回调
     @Override
     public void operationComplete(final @NotNull ChannelFuture future) {
         if (future.isSuccess()) {

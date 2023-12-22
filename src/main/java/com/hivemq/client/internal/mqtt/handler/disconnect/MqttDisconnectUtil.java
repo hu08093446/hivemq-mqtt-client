@@ -98,7 +98,7 @@ public final class MqttDisconnectUtil {
 
     static void fireDisconnectEvent(
             final @NotNull Channel channel, final @NotNull MqttDisconnectEvent disconnectEvent) {
-
+        // 从头节点HeadContext开始向后传播，而不是从当前context向后传播 （都是Inbound事件）
         channel.pipeline().fireUserEventTriggered(disconnectEvent);
     }
 

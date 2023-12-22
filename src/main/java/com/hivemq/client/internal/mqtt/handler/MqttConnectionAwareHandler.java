@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class MqttConnectionAwareHandler extends ChannelInboundHandlerAdapter {
 
+    // ChannelHandlerContext是在pipeline注册ChannelHandler的时候和其绑定的，因此一个被多次注册（无论是否是同一个Pipline）的ChannelHandler会同时拥有多个ChannelHandlerContext
     protected @Nullable ChannelHandlerContext ctx;
 
     @Override
