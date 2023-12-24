@@ -161,10 +161,14 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
         private static final Index.@NotNull Spec<TopicTreeNode, MqttTopicLevel> INDEX_SPEC =
                 new Index.Spec<>(node -> node.topicLevel, 4);
 
+        // 父节点
         private @Nullable TopicTreeNode parent;
         private @Nullable MqttTopicLevel topicLevel;
+        // 孩子节点列表
         private @Nullable Index<TopicTreeNode, MqttTopicLevel> next;
         private @Nullable TopicTreeNode singleLevel;
+
+        // 每个节点上还挂了NodeList
         private @Nullable NodeList<TopicTreeEntry> entries;
         private @Nullable NodeList<TopicTreeEntry> multiLevelEntries;
 

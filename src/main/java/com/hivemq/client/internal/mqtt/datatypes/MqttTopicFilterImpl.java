@@ -38,6 +38,7 @@ import java.util.Arrays;
 public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopicFilter {
 
     static final int WILDCARD_CHECK_FAILURE = -1;
+    // 0b是二进制
     private static final int WILDCARD_FLAG_MULTI_LEVEL = 0b01;
     private static final int WILDCARD_FLAG_SINGLE_LEVEL = 0b10;
     private static final int WILDCARD_CHECK_STATE_NOT_BEFORE = 0;
@@ -57,6 +58,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
         Checks.notEmpty(string, "Topic filter");
         checkLength(string, "Topic filter");
         checkWellFormed(string, "Topic filter");
+        // 判断topic是不是共享订阅
         if (MqttSharedTopicFilterImpl.isShared(string)) {
             return MqttSharedTopicFilterImpl.ofInternal(string);
         }
@@ -202,6 +204,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
                     }
                     break;
                 case WILDCARD_CHECK_STATE_BEFORE:
+                    // 嵌套switch，长见识
                     switch (c) {
                         case MULTI_LEVEL_WILDCARD:
                             wildcardFlags |= WILDCARD_FLAG_MULTI_LEVEL;
@@ -297,6 +300,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
         return matches(MqttChecks.topic(topic));
     }
 
+    // 判断topic和订阅方的topicFilter是否能匹配上
     public boolean matches(final @NotNull MqttTopicImpl topic) {
         return matches(toBinary(), getFilterByteStart(), topic.toBinary());
     }
@@ -329,6 +333,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
         return (fi == filter.length) && (ti == topic.length);
     }
 
+    // todo 这里难道是看topicFilter能否和订阅者的topicFilter匹配上吗？ 这也可以？
     @Override
     public boolean matches(final @Nullable MqttTopicFilter topicFilter) {
         return matches(MqttChecks.topicFilter(topicFilter));

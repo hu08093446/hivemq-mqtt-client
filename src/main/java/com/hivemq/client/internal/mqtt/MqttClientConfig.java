@@ -50,6 +50,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class MqttClientConfig implements Mqtt5ClientConfig {
 
     private final @NotNull MqttVersion mqttVersion;
+    // todo 为什么这里要用volatile？
     private volatile @NotNull MqttClientIdentifierImpl clientIdentifier;
     private final @NotNull MqttClientTransportConfigImpl transportConfig;
     private final @NotNull MqttClientExecutorConfigImpl executorConfig;
@@ -195,6 +196,8 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
                 final long eventLoopAcquireCount = this.eventLoopAcquireCount;
                 assert eventLoop != null : "eventLoopAcquires was > 0 -> eventLoop != null";
                 eventLoop.execute(() -> { // release eventLoop after all tasks are finished
+                    // 因为这里是异步的，执行到这里的时候，外层的锁可能已经释放了，eventLoop可能被重新获取
+                    // 所以下面重新对state进行枷锁，并对eventLoopAcquireCount进行判断
                     synchronized (state) {
                         if (eventLoopAcquireCount == this.eventLoopAcquireCount) { // eventLoop has not been reacquired
                             this.eventLoop = null;
@@ -277,6 +280,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
         private static final @NotNull ConnectDefaults EMPTY = new ConnectDefaults(null, null, null);
 
+        // 这种创建实例的方式还是挺有意思的
         public static @NotNull ConnectDefaults of(
                 final @Nullable MqttSimpleAuth simpleAuth,
                 final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,

@@ -30,8 +30,11 @@ import org.reactivestreams.Subscriber;
 /**
  * @author Silvio Giebl
  */
+
+// todo 这个类貌似仅仅是用来完成订阅动作
 public class MqttSubscribedPublishFlow extends MqttIncomingPublishFlow implements MqttSubscriptionFlow<MqttSubAck> {
 
+    // todo 这里的意思是一个订阅者可以使用多个topicFilter ?
     private final @NotNull HandleList<MqttTopicFilterImpl> topicFilters;
 
     MqttSubscribedPublishFlow(

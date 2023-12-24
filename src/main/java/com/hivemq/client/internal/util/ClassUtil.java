@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class ClassUtil {
 
+    // 这个函数就是对某个类是否存在的方法做了封装，对抛出的异常做了处理
+    // 这里的className需要时全路径
     public static boolean isAvailable(final @NotNull String className) {
         try {
             Class.forName(className);
@@ -33,4 +35,8 @@ public final class ClassUtil {
     }
 
     private ClassUtil() {}
+
+    public static void main(String[] args) {
+        System.out.println(isAvailable("com.hivemq.client.internal.ClassUtil"));
+    }
 }

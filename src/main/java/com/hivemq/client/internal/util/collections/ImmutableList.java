@@ -29,6 +29,8 @@ import java.util.function.UnaryOperator;
 /**
  * @author Silvio Giebl
  */
+
+// 等于是造了一个不可变列表的轮子，并且这个列表可以随机访问
 @Immutable
 public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
 

@@ -65,6 +65,7 @@ public class NettyEventLoopProvider {
     private static class EpollHolder {
 
         private static NettyEventLoopProvider eventLoopProvider() {
+            // 如果epoll可用，则优先用epoll
             if (Epoll.isAvailable()) {
                 return new NettyEventLoopProvider(EpollEventLoopGroup::new, EpollSocketChannel::new);
             } else {
@@ -121,6 +122,7 @@ public class NettyEventLoopProvider {
         final Entry entry = entries.get(executor);
         if (--entry.referenceCount == 0) {
             entries.remove(executor);
+            // todo 为啥这里要有这个判断
             if (!(executor instanceof MultithreadEventLoopGroup)) {
                 // shutdownGracefully must be the last statement so everything is cleaned up even if it throws
                 entry.eventLoopGroup.shutdownGracefully(0, 0, TimeUnit.MILLISECONDS);
