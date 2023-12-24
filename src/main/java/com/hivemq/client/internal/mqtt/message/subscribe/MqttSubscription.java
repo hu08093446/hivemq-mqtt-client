@@ -27,6 +27,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Silvio Giebl
  */
+
+// 对应一个订阅信息，包括topicFilter、qos等
 @Immutable
 public class MqttSubscription implements Mqtt5Subscription {
 
