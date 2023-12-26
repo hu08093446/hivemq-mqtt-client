@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
+// 这个类是独立的，为所有消息订阅方服务的
 @ClientScope
 class MqttIncomingPublishService {
 

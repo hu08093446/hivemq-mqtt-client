@@ -60,11 +60,13 @@ public class MqttTopicLevel extends ByteArray {
         return this;
     }
 
+    // 将topicLevel加在prefix的后面，进行TopicFilter的组装
     public static @Nullable MqttTopicFilterImpl toFilter(
             final byte @Nullable [] prefix,
             final @Nullable MqttTopicLevel topicLevel,
             final boolean multiLevelWildcard) {
 
+        // 先对整体的长度做计算
         int length = 0;
         if (prefix != null) {
             length += prefix.length + 1;
@@ -78,14 +80,19 @@ public class MqttTopicLevel extends ByteArray {
             }
             length++;
         }
+
+        // 依据计算出的长度创建新的字节数据
         final byte[] bytes = new byte[length];
         int cursor = 0;
+
+        // 拷贝prefix到新数组
         if (prefix != null) {
             System.arraycopy(prefix, 0, bytes, cursor, prefix.length);
             cursor += prefix.length;
             bytes[cursor] = MqttTopicImpl.TOPIC_LEVEL_SEPARATOR;
             cursor++;
         }
+        // 拷贝topicLevel到新数组
         if (topicLevel != null) {
             System.arraycopy(topicLevel.array, 0, bytes, cursor, topicLevel.array.length);
             cursor += topicLevel.array.length;

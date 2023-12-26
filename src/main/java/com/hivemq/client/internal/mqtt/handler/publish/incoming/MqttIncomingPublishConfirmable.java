@@ -25,8 +25,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Silvio Giebl
  */
 class MqttIncomingPublishConfirmable implements Confirmable, Runnable {
-
+    // 代表一个订阅方
     private final @NotNull MqttIncomingPublishFlow flow;
+    // 代表一条收到的消息
     private final @NotNull MqttStatefulPublishWithFlows publishWithFlows;
     private final @NotNull AtomicBoolean confirmed = new AtomicBoolean(false);
 
@@ -56,6 +57,7 @@ class MqttIncomingPublishConfirmable implements Confirmable, Runnable {
         publishWithFlows.acknowledge(flow);
     }
 
+    // 因为qos0的不需要ack,所以它单独拎出来了
     static class Qos0 implements Confirmable {
 
         private final @NotNull AtomicBoolean confirmed = new AtomicBoolean(false);

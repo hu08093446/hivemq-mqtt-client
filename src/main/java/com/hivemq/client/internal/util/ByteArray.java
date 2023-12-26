@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Silvio Giebl
  */
+// 对字节数组的一种简单封装
 public class ByteArray {
 
     protected final byte @NotNull [] array;
@@ -42,6 +43,7 @@ public class ByteArray {
         return array.length;
     }
 
+    // equals和hashcode,要重写就一起重写，毕竟他俩的关联性还是比较高的
     @Override
     public final boolean equals(final @Nullable Object o) {
         if (this == o) {

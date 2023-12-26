@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-// 本地订阅tree
+// 本地订阅tree，这里的代码真心看不懂，相当复杂
 /**
  * @author Silvio Giebl
  */
@@ -155,7 +155,7 @@ public class MqttSubscribedPublishFlowTree implements MqttSubscribedPublishFlows
         }
     }
 
-    // 这个类看着像是本地保存的topic信息
+    // 可以理解为是两个/之间的那部分
     private static class TopicTreeNode {
 
         private static final Index.@NotNull Spec<TopicTreeNode, MqttTopicLevel> INDEX_SPEC =

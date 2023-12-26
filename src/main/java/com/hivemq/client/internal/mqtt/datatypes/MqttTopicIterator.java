@@ -100,6 +100,7 @@ public class MqttTopicIterator extends MqttTopicLevel {
         return new MqttTopicLevels(Arrays.copyOfRange(array, start, allEnd), end - start);
     }
 
+    // todo 目前简单的理解为只要相等就向前推进一次
     public boolean forwardIfEqual(final @NotNull MqttTopicLevels levels) {
         final byte[] levelsArray = levels.getArray();
         final int levelsEnd = levels.getEnd();
@@ -112,6 +113,7 @@ public class MqttTopicIterator extends MqttTopicLevel {
         return false;
     }
 
+    // todo 目前简单的理解为把相等的全部向前推进完成
     public int forwardWhileEqual(final @NotNull MqttTopicLevels levels) {
         if (!hasNext()) {
             return levels.getEnd();
@@ -148,6 +150,7 @@ public class MqttTopicIterator extends MqttTopicLevel {
         return levelsBranchIndex;
     }
 
+    // todo 目前简单的理解为把匹配的全部向前推进完成
     public boolean forwardIfMatch(final @NotNull MqttTopicLevels levels) {
         if (!hasNext()) {
             return false;
