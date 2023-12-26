@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
+// 同一个类型的异常集中管理，也挺有意思
 public final class MqttClientStateExceptions {
 
     public static @NotNull MqttClientStateException notConnected() {

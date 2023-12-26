@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Silvio Giebl
  */
+// 可以是server发送给client,也可以是client发送给server,代表对publish数据报文的响应
 @Immutable
 public class MqttPubAck extends MqttMessageWithUserProperties.WithReason.WithCode.WithId<Mqtt5PubAckReasonCode>
         implements Mqtt5PubAck {

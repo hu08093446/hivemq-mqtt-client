@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
-// 这个类是独立的，为所有消息订阅方服务的
+// 这个类是独立的，是为所有消息订阅方服务的
 @ClientScope
 class MqttIncomingPublishService {
 
@@ -38,7 +38,9 @@ class MqttIncomingPublishService {
             InternalLoggerFactory.getLogger(MqttIncomingPublishService.class);
     private static final boolean QOS_0_DROP_OLDEST = true; // TODO configurable
 
+    // MqttIncomingQosHandler相当于是上游数据来源
     private final @NotNull MqttIncomingQosHandler incomingQosHandler;
+    // MqttIncomingPublishFlows相当于是下游数据处理
     final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
 
     private final @NotNull ChunkedArrayQueue<MqttStatefulPublishWithFlows> qos0Queue = new ChunkedArrayQueue<>(32);

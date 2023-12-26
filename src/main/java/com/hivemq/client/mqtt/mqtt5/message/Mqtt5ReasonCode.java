@@ -36,6 +36,7 @@ public interface Mqtt5ReasonCode {
      * @return whether this Reason Code is an Error Code.
      */
     default boolean isError() {
+        // 看来整数和十六进制直接比较也是可以的
         return getCode() >= 0x80;
     }
 

@@ -97,6 +97,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
          *
          * @param <R> the type of the Reason Code.
          */
+        // Java的内部类可以访问外部类的成员（包括私有的），所以这里内部类的层层嵌套也挺有意思
         public abstract static class WithCode<R extends Mqtt5ReasonCode> extends WithReason {
 
             private final @NotNull R reasonCode;

@@ -310,6 +310,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     @Override
     public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
         if (msg instanceof MqttPubAck) {
+            // qos1下读取从server发送过来的puback消息
             readPubAck(ctx, (MqttPubAck) msg);
         } else if (msg instanceof MqttPubRec) {
             readPubRec(ctx, (MqttPubRec) msg);
@@ -322,6 +323,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
     private void readPubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubAck pubAck) {
         final int packetIdentifier = pubAck.getPacketIdentifier();
+        // 针对qos1的情况，这里就是通过pubAck的标识把对应的publish消息取出来
         final MqttPubOrRelWithFlow removed = pendingIndex.remove(packetIdentifier);
 
         if (removed == null) {
@@ -342,11 +344,11 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         }
 
         completePending(ctx, publishWithFlow);
-
         onPubAck(publish, pubAck);
 
         final Throwable t = (pubAck.getReasonCode().isError()) ?
                 new Mqtt5PubAckException(pubAck, "PUBACK contained an Error Code") : null;
+        // todo 如果client对server发送publish消息失败了，貌似不会重发
         publishWithFlow.getAckFlow().onNext(new MqttQos1Result(publish, t, pubAck));
     }
 
