@@ -107,6 +107,7 @@ public class MqttDecoder extends ByteToMessageDecoder {
                         Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "must not receive this packet type");
             }
 
+            // 在读取之前先把writerIndex后移，把需要读取的内容放入可读取范围
             in.writerIndex(readerIndexAfterFixedHeader + remainingLength);
             out.add(decoder.decode(flags, in, context));
             in.writerIndex(writerIndex);
