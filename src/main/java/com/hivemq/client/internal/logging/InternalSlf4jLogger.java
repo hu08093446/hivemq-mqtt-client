@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Silvio Giebl
  */
+// 从实现来看，整个client应该是只记录error和warn级别的日志
 class InternalSlf4jLogger implements InternalLogger {
 
     private final @NotNull Logger delegate;

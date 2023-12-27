@@ -30,6 +30,8 @@ public final class InternalLoggerFactory {
         SLF4J_AVAILABLE = ClassUtil.isAvailable("org.slf4j.Logger");
     }
 
+    // 这个封装蛮有意思的，首先会检查slf4j是否存在，如果存在就用它，如果不存在就用自定义的空的日志类
+    // 保证了程序的鲁棒性
     public static @NotNull InternalLogger getLogger(final @NotNull Class<?> clazz) {
         if (SLF4J_AVAILABLE) {
             return new InternalSlf4jLogger(clazz);
