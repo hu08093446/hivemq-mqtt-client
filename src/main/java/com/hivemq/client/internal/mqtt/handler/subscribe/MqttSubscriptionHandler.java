@@ -100,7 +100,8 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
             final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
 
         subscriptionIdentifiersAvailable = connectionConfig.areSubscriptionIdentifiersAvailable();
-
+        // 如果hasSessin是false,说明前面执行了onSessionEnd,那么pending就被清空了，所以这里要重新加进去
+        // 如果为true,则没有清空，就不需要
         if (!hasSession) {
             incomingPublishFlows.getSubscriptions().forEach((subscriptionIdentifier, subscriptions) -> {
                 final MqttSubscribe subscribe = new MqttSubscribe(ImmutableList.copyOf(subscriptions),
