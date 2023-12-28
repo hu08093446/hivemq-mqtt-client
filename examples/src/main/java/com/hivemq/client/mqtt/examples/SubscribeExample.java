@@ -2,6 +2,7 @@ package com.hivemq.client.mqtt.examples;
 
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
+import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 
@@ -12,6 +13,11 @@ import java.util.concurrent.TimeUnit;
 public class SubscribeExample {
 
     public static void main(String[] args) throws InterruptedException {
+//        syncConnect();
+        asyncConnect();
+    }
+
+    private static void syncConnect() throws InterruptedException {
         final Mqtt5BlockingClient client = Mqtt5Client.builder()
                 .identifier(UUID.randomUUID().toString())
                 .serverHost("localhost")
@@ -32,6 +38,24 @@ public class SubscribeExample {
         } finally {
             client.disconnect();
         }
+    }
+
+    private static void asyncConnect() {
+        Mqtt5AsyncClient client = Mqtt5Client.builder()
+                .identifier(UUID.randomUUID().toString())
+                .serverHost("localhost")
+                .serverPort(1883)
+                .buildAsync();
+
+//        client.connect()
+//                .thenCompose(connAck -> client.publishWith().topic("test/topic").payload("1".getBytes()).send())
+//                .thenCompose(publishResult -> client.disconnect());
+
+        client.subscribeWith()
+                .topicFilter("test/topic")
+                .qos(MqttQos.EXACTLY_ONCE)
+                .callback(System.out::println)
+                .send();
     }
 
 }
