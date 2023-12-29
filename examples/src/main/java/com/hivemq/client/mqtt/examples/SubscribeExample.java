@@ -40,7 +40,7 @@ public class SubscribeExample {
         }
     }
 
-    private static void asyncConnect() {
+    private static void asyncConnect() throws InterruptedException {
         Mqtt5AsyncClient client = Mqtt5Client.builder()
                 .identifier(UUID.randomUUID().toString())
                 .serverHost("localhost")
@@ -57,6 +57,7 @@ public class SubscribeExample {
                 .qos(MqttQos.EXACTLY_ONCE)
                 .callback(System.out::println)
                 .send();
+        TimeUnit.HOURS.sleep(1);
     }
 
 }
