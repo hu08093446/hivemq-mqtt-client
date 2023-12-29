@@ -47,6 +47,7 @@ public class SubscribeExample {
                 .serverPort(1883)
                 .buildAsync();
 
+        client.connect();
 //        client.connect()
 //                .thenCompose(connAck -> client.publishWith().topic("test/topic").payload("1".getBytes()).send())
 //                .thenCompose(publishResult -> client.disconnect());

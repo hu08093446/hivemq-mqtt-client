@@ -131,6 +131,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
         }
         // 一旦connect请求写入结束，就要把decoder加入进来，这样才能解析mqtt服务端的响应
         ctx.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, decoder);
+        System.out.println("");
     }
 
     @Override
