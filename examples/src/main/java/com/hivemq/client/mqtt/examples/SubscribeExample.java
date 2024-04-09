@@ -60,11 +60,12 @@ public class SubscribeExample {
                 .qos(MqttQos.EXACTLY_ONCE)
                 .callback(SubscribeExample::doSomething)
                 .send();
-//        TimeUnit.HOURS.sleep(1);
+        TimeUnit.HOURS.sleep(1);
     }
 
     private static void doSomething(Mqtt5Publish publish) {
         System.out.println("+++++++++++++++++++++");
+        throw new RuntimeException("ops");
     }
 
 }
