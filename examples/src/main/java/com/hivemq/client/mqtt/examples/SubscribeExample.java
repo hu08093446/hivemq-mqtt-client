@@ -1,14 +1,17 @@
 package com.hivemq.client.mqtt.examples;
 
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class SubscribeExample {
 
@@ -20,7 +23,7 @@ public class SubscribeExample {
     private static void syncConnect() throws InterruptedException {
         final Mqtt5BlockingClient client = Mqtt5Client.builder()
                 .identifier(UUID.randomUUID().toString())
-                .serverHost("localhost")
+                .serverHost("192.168.86.128")
                 .serverPort(1883)
                 .buildBlocking();
 
@@ -43,7 +46,7 @@ public class SubscribeExample {
     private static void asyncConnect() throws InterruptedException {
         Mqtt5AsyncClient client = Mqtt5Client.builder()
                 .identifier(UUID.randomUUID().toString())
-                .serverHost("localhost")
+                .serverHost("192.168.86.128")
                 .serverPort(1883)
                 .buildAsync();
 
@@ -55,9 +58,13 @@ public class SubscribeExample {
         client.subscribeWith()
                 .topicFilter("test/topic")
                 .qos(MqttQos.EXACTLY_ONCE)
-                .callback(System.out::println)
+                .callback(SubscribeExample::doSomething)
                 .send();
-        TimeUnit.HOURS.sleep(1);
+//        TimeUnit.HOURS.sleep(1);
+    }
+
+    private static void doSomething(Mqtt5Publish publish) {
+        System.out.println("+++++++++++++++++++++");
     }
 
 }
