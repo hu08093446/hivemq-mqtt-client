@@ -185,6 +185,8 @@ class MqttIncomingPublishService {
                     // requested为0代表向这个订阅方推送消息被阻塞了，阻塞统计+1
                     blockingFlowCount++;
                     // todo 这里进行break的目的是啥呢？
+                    // 应该可以这么理解，blockingFlowCount代表当前被阻塞的flow，referencedFlowCount代表当前消费消息的flow
+                    // 如果两者相等，意味着所有的Flow都被阻塞了，都阻塞了，还发送啥消息呀，只能break退出循环
                     if (blockingFlowCount == referencedFlowCount) {
                         break;
                     }

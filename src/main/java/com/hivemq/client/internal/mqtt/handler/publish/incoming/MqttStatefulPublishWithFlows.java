@@ -59,6 +59,7 @@ class MqttStatefulPublishWithFlows extends HandleList<MqttIncomingPublishFlow> {
         return missingAcknowledgements == 0;
     }
 
+    // 单个订阅方进行ack，这个订阅方就是 MqttIncomingPublishFlow
     void acknowledge(final @NotNull MqttIncomingPublishFlow flow) {
         flow.acknowledge(--missingAcknowledgements == 0);
     }
