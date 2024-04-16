@@ -44,6 +44,7 @@ class MqttStatefulPublishWithFlows extends HandleList<MqttIncomingPublishFlow> {
 
     @Override
     public @NotNull Handle<MqttIncomingPublishFlow> add(final @NotNull MqttIncomingPublishFlow flow) {
+        // qos为1或2并且需要手工确认
         if ((publish.stateless().getQos() != MqttQos.AT_MOST_ONCE) && flow.manualAcknowledgement) {
             // 这里是从本条mqtt消息的维度进行没有ack的订阅方的统计
             missingAcknowledgements++;
