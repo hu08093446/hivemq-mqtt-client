@@ -65,7 +65,8 @@ public class SubscribeExample {
 
     private static void doSomething(Mqtt5Publish publish) {
         System.out.println("+++++++++++++++++++++");
-        throw new RuntimeException("ops");
+        publish.acknowledge();
+//        throw new RuntimeException("ops");
     }
 
 }

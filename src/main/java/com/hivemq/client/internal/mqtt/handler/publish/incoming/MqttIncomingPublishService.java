@@ -108,8 +108,11 @@ class MqttIncomingPublishService {
         if (publishWithFlows.isEmpty()) {
             LOGGER.warn("No publish flow registered for {}.", publishWithFlows.publish);
         }
+        // 这里我是这么理解的，消息的处理是有先来后到的，要先把队列里能处理的都处理了，才能处理当前的（就是下面的emit操作）
         drain();
         for (Handle<MqttIncomingPublishFlow> h = publishWithFlows.getFirst(); h != null; h = h.getNext()) {
+            // 之所以判断 == 1 时才做++操作，是为了保证每个处于工作中（正在处理订阅消息）的Flow只计算一次
+            // 这个操作只会在收到消息的时候做，已经放到队列里的就不会有这个操作了
             if (h.getElement().reference() == 1) {
                 referencedFlowCount++;
             }
@@ -122,6 +125,7 @@ class MqttIncomingPublishService {
         runIndex++;
         blockingFlowCount = 0;
 
+        // 每次都从头开始处理
         qos1Or2It.reset();
         while (qos1Or2It.hasNext()) {
             final MqttStatefulPublishWithFlows publishWithFlows = qos1Or2It.next();
@@ -138,6 +142,7 @@ class MqttIncomingPublishService {
             }
         }
 
+        // 每次都从头开始处理
         qos0It.reset();
         while (qos0It.hasNext()) {
             final MqttStatefulPublishWithFlows publishWithFlows = qos0It.next();
@@ -159,10 +164,12 @@ class MqttIncomingPublishService {
             // 订阅被取消了
             if (flow.isCancelled()) {
                 publishWithFlows.remove(h);
+                // 之所以判断 == 0 时才做--操作，是为了保证每个处于工作中（正在处理订阅消息）的Flow只计算一次
                 if (flow.dereference() == 0) {
                     referencedFlowCount--;
                 }
             } else {
+                // 这里是一个背压操作，就是限流
                 final long requested = flow.requested(runIndex);
                 if (requested > 0) {
                     MqttPublish publish = publishWithFlows.publish.stateless();
@@ -184,9 +191,8 @@ class MqttIncomingPublishService {
                 } else if (requested == 0) {
                     // requested为0代表向这个订阅方推送消息被阻塞了，阻塞统计+1
                     blockingFlowCount++;
-                    // todo 这里进行break的目的是啥呢？
                     // 应该可以这么理解，blockingFlowCount代表当前被阻塞的flow，referencedFlowCount代表当前消费消息的flow
-                    // 如果两者相等，意味着所有的Flow都被阻塞了，都阻塞了，还发送啥消息呀，只能break退出循环
+                    // 如果两者相等，意味着所有的处于工作中Flow都被阻塞了，都阻塞了，说明当前业务很繁忙，还发送啥新消息呀，只能break退出循环
                     if (blockingFlowCount == referencedFlowCount) {
                         break;
                     }

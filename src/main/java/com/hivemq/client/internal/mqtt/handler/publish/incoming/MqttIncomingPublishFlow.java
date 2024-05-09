@@ -50,9 +50,10 @@ abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     private final @NotNull AtomicLong newRequested = new AtomicLong();
     private final @NotNull AtomicInteger requestState = new AtomicInteger(STATE_NO_NEW_REQUESTS);
 
+    // 只有在unsubscribe（退订）和出错的时候，done才会被设置为true
     private boolean done;
     private @Nullable Throwable error;
-    // todo 这里的referenced代指的是什么？
+    // 这里的referenced代指的应该是当前订阅者接收到并将要处理的消息的数量
     private int referenced;
     // 我现在的理解是，这个代表了当前订阅方已经匹配上但还没有ack的消息的数量
     private int missingAcknowledgements;

@@ -55,6 +55,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
 
     public static final @NotNull String NAME = "qos.incoming";
     private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttIncomingQosHandler.class);
+    // Spec用于计算HashMap的key
     private static final IntIndex.@NotNull Spec<Object> INDEX_SPEC = new IntIndex.Spec<>(value -> {
         if (value instanceof MqttStatefulPublishWithFlows) {
             return ((MqttStatefulPublishWithFlows) value).publish.getPacketIdentifier();
@@ -314,6 +315,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler {
     @Override
     public void onSessionEnd(final @NotNull Throwable cause) {
         super.onSessionEnd(cause);
+        // 清空session，在这里就是清空所有收到但还没有处理完的消息
         messages.clear();
     }
 

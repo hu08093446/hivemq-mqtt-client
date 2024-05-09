@@ -45,6 +45,7 @@ public class MqttSession {
     private final @NotNull MqttSubscriptionHandler subscriptionHandler;
     private final @NotNull MqttIncomingQosHandler incomingQosHandler;
     private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
+    // 表示当前客户端是否存储的有session信息（不代表是否需要session）
     private boolean hasSession;
     private @Nullable ScheduledFuture<?> expireFuture;
 
@@ -73,6 +74,7 @@ public class MqttSession {
         hasSession = true;
 
         if (expireFuture != null) {
+            // 一旦启动，就取消expireFuture，如果session还没有被清除，那就保留了下来
             expireFuture.cancel(false);
             expireFuture = null;
         }
@@ -98,6 +100,7 @@ public class MqttSession {
             eventLoop.execute(
                     () -> end(new MqttSessionExpiredException("Session expired as connection was closed.", cause)));
         } else if (expiryInterval != MqttConnect.NO_SESSION_EXPIRY) {
+            // 延时清除session，如果在清除session之前被取消了，那session就保留了下来，这样就实现了session功能
             expireFuture = eventLoop.schedule(() -> {
                 if (expireFuture != null) {
                     expireFuture = null;
