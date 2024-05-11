@@ -60,6 +60,11 @@ public class SubscribeExample {
                 .qos(MqttQos.EXACTLY_ONCE)
                 .callback(SubscribeExample::doSomething)
                 .send();
+        client.subscribeWith()
+                .topicFilter("test/topica")
+                .qos(MqttQos.EXACTLY_ONCE)
+                .callback(SubscribeExample::doSomething)
+                .send();
         TimeUnit.HOURS.sleep(1);
     }
 

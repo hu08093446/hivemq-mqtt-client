@@ -81,6 +81,7 @@ class MqttIncomingPublishService {
             }
         }
         onPublish(publishWithFlows);
+        // 不为空意味着还有订阅者没有处理改消息，需要放进队列里做后续跟踪
         if (!publishWithFlows.isEmpty()) {
             qos0Queue.offer(publishWithFlows);
         }
