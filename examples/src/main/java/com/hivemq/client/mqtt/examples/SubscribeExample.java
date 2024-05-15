@@ -55,15 +55,23 @@ public class SubscribeExample {
 //                .thenCompose(connAck -> client.publishWith().topic("test/topic").payload("1".getBytes()).send())
 //                .thenCompose(publishResult -> client.disconnect());
 
+        // 下面每个subscribeWith和callback都会创建一个全新的订阅流程，最终都会挂在订阅树上，他们之间互不干扰
         client.subscribeWith()
                 .topicFilter("test/topic")
-                .qos(MqttQos.EXACTLY_ONCE)
+                .qos(MqttQos.AT_LEAST_ONCE)
                 .callback(SubscribeExample::doSomething)
                 .send();
         client.subscribeWith()
                 .topicFilter("test/topica")
-                .qos(MqttQos.EXACTLY_ONCE)
+                .qos(MqttQos.AT_LEAST_ONCE)
                 .callback(SubscribeExample::doSomething)
+                .send();
+        TimeUnit.SECONDS.sleep(5);
+
+        client.publishWith()
+                .topic("test/publish")
+                .qos(MqttQos.AT_LEAST_ONCE)
+                .payload("1".getBytes())
                 .send();
         TimeUnit.HOURS.sleep(1);
     }
