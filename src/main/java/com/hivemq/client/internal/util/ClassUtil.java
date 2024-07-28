@@ -37,6 +37,6 @@ public final class ClassUtil {
     private ClassUtil() {}
 
     public static void main(String[] args) {
-        System.out.println(isAvailable("com.hivemq.client.internal.ClassUtil"));
+        System.out.println(isAvailable("com.hivemq.client.internal.util.ClassUtil"));
     }
 }
